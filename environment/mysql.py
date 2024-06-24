@@ -67,7 +67,7 @@ class DAMENGEnv(object):
         def parse_benchmark(file_path):
             with open(file_path) as f:
                 lines = f.read()
-            print(lines)
+            # print(lines)
             temporal_pattern = re.compile(
                 r"Measured tpmC \(NewOrders\) = ([\d.]+)\n.*?Measured tpmTOTAL = ([\d.]+)\n.*\n.*\n.*? Transaction Count = (\d+)")
             match = temporal_pattern.search(lines)
@@ -218,6 +218,7 @@ class DAMENGEnv(object):
                         f.write(str(tpmc_best) + ',' + str(tpmtotal_best) + ',' + str(Transaction))
 
         else:
+            os.mkdir('best_now')
             # 如果文件不存在，则创建文件并记录当前的参数作为最佳参数
             file = open(BEST_NOW + filename, 'w+')
             tpmc_best = external_metrics[0]

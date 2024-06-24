@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from flask import Response, json
-
+from flask import url_for, jsonify, send_file
 from application._init_ import init_app, db
 from application.ProductModel import Product
-
-
+from PIL import Image
+import io
+import os
 app = init_app()
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route("/query_all")
 def query_all():
@@ -24,6 +26,25 @@ def query_all():
 
     return Response(json.dumps(response_data), mimetype='application/json')
 
+@app.route('/get_image')
+def get_image():
+    # 假设图片路径会动态变化
+    # 例如每次请求可能会返回不同的图片 URL
+    image_filename = 'tpmC.png'  # 这里应该是你的动态图片文件名
+    # return send_file('static/{}'.format(image_filename))
+    imgpath = basedir + '/static/tpmC.png'
+    print(imgpath)
+    with open(imgpath, 'rb') as f:
+        # 读取图片内容
+        img_data = f.read()
+    img = Image.open(io.BytesIO(img_data))
+    img_byte_array = io.BytesIO()
+    img.save(img_byte_array, format='PNG')
+    img_byte_array = img_byte_array.getvalue()
+    print("Image Byte Array:", img_byte_array)
+    print("Image Path:", jsonify({'image_url': url_for('static', filename=f'{image_filename}')}))
+    # return jsonify({'image_url': imgpath})
+    return img_byte_array
 #
 # @app.route("/query_first")
 # def query_filter():

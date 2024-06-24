@@ -32,11 +32,11 @@ if __name__ == '__main__':
     parser.add_argument('--memory', type=str, default='', help='add replay memory')
     parser.add_argument('--noisy', action='store_true', help='use noisy linear layer')
     parser.add_argument('--other_knob', type=int, default=0, help='Number of other knobs')
-    parser.add_argument('--batch_size', type=int, default=2, help='Training Batch Size')
+    parser.add_argument('--batch_size', type=int, default=5, help='Training Batch Size')
     parser.add_argument('--epoches', type=int, default=5000000, help='Training Epoches')
     parser.add_argument('--benchmark', type=str, default='sysbench', help='[sysbench, tpcc]')
     parser.add_argument('--metric_num', type=int, default=16, help='metric nums')
-    parser.add_argument('--default_knobs', type=int, default=197, help='default knobs')
+    parser.add_argument('--default_knobs', type=int, default=23, help='default knobs')
     opt = parser.parse_args()
 
     # Create Environment
@@ -86,6 +86,9 @@ if __name__ == '__main__':
 
     if not os.path.exists('model_params'):
         os.mkdir('model_params')
+
+    if not os.path.exists('plot'):
+        os.mkdir('plot')
 
     # 使用当前方法和时间戳生成表达式名称
     expr_name = 'train_{}_{}'.format(opt.method, str(utils.get_timestamp()))
@@ -143,6 +146,9 @@ if __name__ == '__main__':
         model.reset(sigma)
         t = 0  # 初始化步数计数器
 
+        tpmC = []
+        knob_remain = []
+        utils.plot_tpmC(tpmC, t)
         # 循环执行动作直到环境结束
         while True:
             step_time = utils.time_start()  # 记录每步开始的时间
@@ -159,10 +165,18 @@ if __name__ == '__main__':
             env_step_time = utils.time_start()  # 记录环境执行动作开始的时间
             reward, state_, done, score, metrics, restart_time = env.step(current_knob)  # 执行动作并获取环境反馈
             env_step_time = utils.time_end(env_step_time)
+
+            #画图
+            tpmC.append(metrics[0])
+            utils.plot_tpmC(tpmC, t)
+            knob_remain.append(current_knob)
+            utils.plot_knob(knob_remain)
+
             logger.info(
                 "\n[{}][Episode: {}][Step: {}][Metric tpmC:{} tpmTotal:{} Transaction Count:{}]Reward: {} Score: {} Done: {}".format(
                     opt.method, episode, t, metrics[0], metrics[1], metrics[2], reward, score, done
                 ))
+
             env_restart_times.append(restart_time)  # 记录重启时间
 
             next_state = state_  # 获取下一个状态

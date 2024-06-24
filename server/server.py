@@ -95,17 +95,17 @@ def start_dm(instance_name, configs):
         print(cmd)  # 打印 Docker 启动命令
         sudo_exec(cmd, '123456')  # 执行 Docker 启动命令
     else:  # 如果不在 Docker 中运行 MySQL 服务器
-        # data_dir = '/dmdata/data/DAMENG'
-        # backup_path = os.path.join(data_dir, 'dm.ini.dmbak')
-        # target_path = os.path.join(data_dir, 'dm.ini')
-        #
-        # # 检查备份文件是否存在
-        # if os.path.exists(backup_path):
-        #     # 直接覆盖目标文件
-        #     shutil.copy2(backup_path, target_path)
-        #     print(f"Restored {backup_path} to {target_path}")
-        # else:
-        #     print(f"Backup file {backup_path} not found.")
+        data_dir = '/dmdata/data/DAMENG'
+        backup_path = os.path.join(data_dir, 'dm.ini.dmbak')
+        target_path = os.path.join(data_dir, 'dm.ini')
+
+        # 检查备份文件是否存在
+        if os.path.exists(backup_path):
+            # 直接覆盖目标文件
+            shutil.copy2(backup_path, target_path)
+            print(f"Restored {backup_path} to {target_path}")
+        else:
+            print(f"Backup file {backup_path} not found.")
 
         write_cnf_file(params)  # 写入 MySQL 配置文件
         # TODO 优化  写一个配置文件选择数据库路径

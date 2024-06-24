@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import matplotlib.pyplot as plt
 import time
 import pickle
 import logging
@@ -75,3 +75,57 @@ def save_state_actions(state_action, filename):
     f = open(filename, 'wb')
     pickle.dump(state_action, f)
     f.close()
+
+
+def plot_tpmC(tpmC, epoch):
+
+    if len(tpmC) > 10 or epoch > 10:
+        tpmC_plot = tpmC[-10:]
+        epoch_plot = list(range(epoch - 9, epoch + 1))
+
+    else:
+        tpmC_plot = tpmC
+        epoch_plot = list(range(0, len(tpmC)))
+
+    # if len(tpmC) == 0:
+    #     plt.xlim(0, 1)
+    # else:
+    #     plt.xlim(epoch_plot[0], epoch_plot[-1] + 1)
+    plt.figure(figsize=(10, 6))
+    plt.plot(epoch_plot, tpmC_plot, marker='o', linestyle='-', color='b', label='')
+    plt.title('TpmC (Last 10 Entries)')
+    plt.ylim(0, 100000)
+    plt.xlim(0,10)
+    plt.xlabel('Epoch')
+    plt.ylabel('TpmC')
+    # plt.legend()
+
+    # 显示网格
+    plt.grid(True)  # 启用网格线
+
+    plt.savefig('plot/tpmC.png')
+    # 显示图形
+    plt.show()  # 显示图表
+
+def plot_knob(knob):
+    knob_last_ten = knob[-10:]
+    result = {}
+    for d in knob_last_ten:
+        for key, value in d.items():
+            if key not in result:
+                result[key] = []
+            result[key].append(value)
+
+    print(result)
+    for key, values in result.items():
+        plt.figure(figsize=(10, 6))
+        plt.plot(range(1, len(values) + 1), values, marker='o', linestyle='-', label=key)
+        plt.title(f'{key}')
+        # plt.xlabel('')
+        plt.ylabel(f'{key}')
+        # plt.legend()
+        plt.grid(True)
+        plt.xticks(range(0, 10, 1))
+        plt.yticks(range(min(values), max(values) + 1, int((min(values)+max(values))/10) + 1))
+        plt.savefig(f'plot/{key}.png')  # 保存图表到指定路径
+        plt.show()  # 显示图表
