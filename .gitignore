@@ -1,6 +1,4 @@
 my_*
-*.log
-.jTPCC_run_seq.dat
 /buildtest/node_modules/.bin/esbuild
 /buildtest/node_modules/.bin/esbuild.cmd
 /buildtest/node_modules/.bin/esbuild.ps1
