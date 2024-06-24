@@ -7,6 +7,7 @@
 
 ### 搭建步骤
 
+1111
 1. 将训练模型的项目AutoTuner放至两台服务器的用户cheng的home目录下，即目录为：/home/cheng/AutoTuner（项目名称请保持AutoTuner不变）。
 
 2. 在CDBTune1安装sysbench1.0，安装方法参考：[Ubuntu安装sysbench1.0](https://blog.csdn.net/cxin917/article/details/81557453)。
